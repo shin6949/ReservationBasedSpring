@@ -101,12 +101,12 @@
 
 <body>
 <div class="head_text">
-<h1>예약페이지</h1>
+<h1>진료예약</h1>
 </div>
 <div class="text3">
 <form name="reservationForm" method="post" action="/reservation/makereservation">
     <label for="select-date"> 1.진료 날짜를 선택하세요.
-        <select id="select-date" name="date" onchange="changeTimeSelectValue()">
+        <select class=select1 id="select-date" name="date" onchange="changeTimeSelectValue()">
             <c:forEach var="row" items="${dates}">
                 <option value="${row.dateName.toString()}">${row.toString()}</option>
             </c:forEach>
@@ -115,7 +115,7 @@
     <br>
 
     <label for="select-department"> 2.진료 과를 선택하세요.
-        <select id="select-department" name="department" onchange="changeDoctorSelectValue()">
+        <select class=select2 id="select-department" name="department" onchange="changeDoctorSelectValue()">
             <c:forEach var="row" items="${departments}">
                 <option value="${row.dno}">${row.name}</option>
             </c:forEach>
@@ -124,13 +124,13 @@
     <br>
 
     <label for="select-doctor"> 3.의사 선생님을 선택하세요.
-        <select id="select-doctor" name="doctor" onchange="changeTimeSelectValue()">
+        <select class= select3 id="select-doctor" name="doctor" onchange="changeTimeSelectValue()">
         </select>
     </label>
     <br>
 
     <label for="select-time"> 4.진료 시간을 선택하세요.
-        <select id="select-time" name="time">
+        <select class= select4 id="select-time" name="time">
         </select>
     </label>
     <br>

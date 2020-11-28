@@ -7,14 +7,43 @@
     font-size: 20px;
     margin-left: 10px;
 }
-select{
+.select1{
+    display: inline-block;
     width: 140px;
     height: 30px;
-    text-align-last: center;
+    padding-left: 10px;
     appearance: none;
-    -webkit-appearance: button;
+    -webkit-appearance: none;
+    background: url("https://t1.daumcdn.net/cfile/tistory/99761B495C84AA8716") no-repeat 100% 50%;
 }
-select::-ms-expand{display:none;}
+.select2{
+    display: inline-block;
+    width: 115px;
+    height: 30px;
+    padding-left: 10px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: url("https://t1.daumcdn.net/cfile/tistory/99761B495C84AA8716") no-repeat 100% 50%;
+}
+.select3{
+    display: inline-block;
+    width: 85px;
+    height: 30px;
+    padding-left: 10px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: url("https://t1.daumcdn.net/cfile/tistory/99761B495C84AA8716") no-repeat 100% 50%;
+}
+.select4{
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    padding-left: 10px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: url("https://t1.daumcdn.net/cfile/tistory/99761B495C84AA8716") no-repeat 100% 50%;
+}
+select::-ms-expand{display: none;}
 .btn{
     font-size: 20px;
     display:block;
@@ -23,7 +52,6 @@ select::-ms-expand{display:none;}
     line-height: 40px;
     border: 1px limegreen solid;
     margin: 15px auto;
-    background-color: ;
     text-align: center;
     cursor: pointer;
 
