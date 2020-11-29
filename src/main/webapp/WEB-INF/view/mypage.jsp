@@ -62,7 +62,7 @@
                 <c:if test="${row.isCancelable() eq 'true'}"><input type="radio" name="rnoChecked" value="${row.rno}"></c:if>
                 <c:if test="${row.isCancelable() eq 'false'}"><input type="radio" name="rnoChecked" value="${row.rno}" disabled></c:if>
             </td>
-            <td>${row.reservationTimeString}</td>
+            <td>${row.getReservationTimeString()}</td>
             <td><c:choose>
                 <c:when test="${row.confirmed eq 'true'}">예약됨</c:when>
                 <c:when test="${row.confirmed eq 'false'}">취소됨</c:when>
@@ -73,7 +73,20 @@
         </tr>
     </c:forEach>
 </table>
+<div style="text-align: center">
+    <c:forEach var="num" begin="1" end="${pagesCount}">
+    <c:if test="${num eq nowPage}">
+        ${num}
+    </c:if>
+
+    <c:if test="${num ne nowPage}">
+        <a href="${pageContext.request.contextPath}/mypage?page=${num}"> ${num}</a>
+        </c:if>
+        </c:forEach>
+</div>
 <input type="button" value="예약 취소" onclick="cancelReservation();">
+<input type="button" value="메인 페이지" onclick="location.href='/main'">
+
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>

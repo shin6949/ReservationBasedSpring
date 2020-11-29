@@ -6,14 +6,56 @@
 <head>
     <title>예약페이지</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <link href="/resources/reservation_css.css" rel="stylesheet" type="text/css">
+    <link href="${pageContext.request.contextPath}/resources/reservation_css.css" rel="stylesheet" type="text/css">
 
     <%-- 진료 과가 변경되었을 때 생기는 이벤트 --%>
     <script>
-        function changeDoctorSelectValue() {
+        function dateChangedEvent() {
+            document.forms["reservationForm"].doctor.options.length = 0;
+
+            const guideSelect = new Option();
+            guideSelect.value = "";
+            guideSelect.text = "선택하세요.";
+            guideSelect.disabled = true;
+            guideSelect.selected = true;
+            guideSelect.hidden = true;
+
+            document.forms["reservationForm"].time.options.length = 0;
+            document.forms["reservationForm"].time.add(guideSelect);
+
+            // 같은 Option 객체를 사용하면 둘 중 하나는 표시되지 않음. (메모리에 할당되서 옮겨가는 식인듯.)
+            const guideSelect2 = new Option();
+            guideSelect2.value = "";
+            guideSelect2.text = "선택하세요.";
+            guideSelect2.disabled = true;
+            guideSelect2.selected = true;
+            guideSelect2.hidden = true;
+
+            document.forms["reservationForm"].doctor.add(guideSelect2);
+
+            if(document.forms["reservationForm"].department.value !== "") {
+                departmentChangedEvent();
+            }
+        }
+
+        function departmentChangedEvent() {
+            if(document.forms["reservationForm"].date.value === "") {
+                return null;
+            }
+
             // option 전체 삭제
             document.forms["reservationForm"].doctor.options.length = 0;
             document.forms["reservationForm"].time.options.length = 0;
+
+            const guideSelect = new Option();
+            guideSelect.value = "";
+            guideSelect.text = "선택하세요.";
+            guideSelect.disabled = true;
+            guideSelect.selected = true;
+            guideSelect.hidden = true;
+
+            // select 태그에 생성 된 option을 넣는다.
+            document.forms["reservationForm"].time.add(guideSelect);
 
             const departmentSelect = document.getElementById("select-department");
             const departmentSelectValue = departmentSelect.options[departmentSelect.selectedIndex].value;
@@ -31,6 +73,16 @@
                 data: form,
 
                 success: function (data) {
+                    const guideSelect = new Option();
+                    guideSelect.value = "";
+                    guideSelect.text = "선택하세요";
+                    guideSelect.disabled = true;
+                    guideSelect.selected = true;
+                    guideSelect.hidden = true;
+
+                    // select 태그에 생성 된 option을 넣는다.
+                    document.forms["reservationForm"].doctor.add(guideSelect);
+
                     for (var i = 0; i < data.length; i++) {
                         // select 태그의 option을 정의한다.
                         var op = new Option();
@@ -39,17 +91,15 @@
 
                         // select 태그에 생성 된 option을 넣는다.
                         document.forms["reservationForm"].doctor.add(op);
-
-                        changeTimeSelectValue();
                     }
                 },
                 error: function (error) {
-                    alert('data error');
+                    alert('Doctor Data Error\n' + error);
                 }
             })
         }
 
-        function changeTimeSelectValue(){
+        function doctorChangedEvent(){
             // option 전체 삭제
             document.forms["reservationForm"].time.options.length = 0;
 
@@ -73,6 +123,21 @@
                 data : form,
 
                 success: function(data){
+                    if(data.length === 0) {
+                        alert('예약 가능한 시간이 없습니다.');
+                        return null;
+                    }
+
+                    const guideSelect = new Option();
+                    guideSelect.value = "";
+                    guideSelect.text = "선택하세요";
+                    guideSelect.disabled = true;
+                    guideSelect.selected = true;
+                    guideSelect.hidden = true;
+
+                    // select 태그에 생성 된 option을 넣는다.
+                    document.forms["reservationForm"].time.add(guideSelect);
+
                     for(var i = 0; i < data.length; i++) {
                         // select 태그의 option을 정의한다.
                         var op = new Option();
@@ -84,29 +149,27 @@
                     }
                 },
                 error: function (error) {
-                    alert('data error');
+                    alert('Time Data Error\n' + error);
                 }
             })
-
-            if(data.length === 0) {
-                alert('예약 가능한 시간이 없습니다.');
-            }
         }
 
-        $(document).ready(function(){
-            changeDoctorSelectValue();
-        });
+        // $(document).ready(function(){
+        //     changeDoctorSelectValue();
+        // });
     </script>
 </head>
 
 <body>
 <div class="head_text">
-<h1>진료예약</h1>
+<h1>진료 예약</h1>
 </div>
+
 <div class="text3">
-<form name="reservationForm" method="post" action="/reservation/makereservation">
+<form name="reservationForm" method="post" action="${pageContext.request.contextPath}/reservation/makereservation">
     <label for="select-date"> 1.진료 날짜를 선택하세요.
-        <select class=select1 id="select-date" name="date" onchange="changeTimeSelectValue()">
+        <select id="select-date" name="date" onchange="dateChangedEvent()" required>
+            <option value="" selected disabled hidden>선택하세요.</option>
             <c:forEach var="row" items="${dates}">
                 <option value="${row.dateName.toString()}">${row.toString()}</option>
             </c:forEach>
@@ -115,7 +178,8 @@
     <br>
 
     <label for="select-department"> 2.진료 과를 선택하세요.
-        <select class=select2 id="select-department" name="department" onchange="changeDoctorSelectValue()">
+        <select id="select-department" name="department" onchange="departmentChangedEvent()" required>
+            <option value="" selected disabled hidden>선택하세요.</option>
             <c:forEach var="row" items="${departments}">
                 <option value="${row.dno}">${row.name}</option>
             </c:forEach>
@@ -124,13 +188,15 @@
     <br>
 
     <label for="select-doctor"> 3.의사 선생님을 선택하세요.
-        <select class= select3 id="select-doctor" name="doctor" onchange="changeTimeSelectValue()">
+        <select id="select-doctor" name="doctor" onchange="doctorChangedEvent()" required>
+            <option value="" selected disabled hidden>선택하세요.</option>
         </select>
     </label>
     <br>
 
     <label for="select-time"> 4.진료 시간을 선택하세요.
-        <select class= select4 id="select-time" name="time">
+        <select id="select-time" name="time" required>
+            <option value="" selected disabled hidden>선택하세요.</option>
         </select>
     </label>
     <br>
@@ -143,10 +209,7 @@
     <script>
         CKEDITOR.replace('symptom');
     </script>
-
     <br>
-
-
     <input class="btn hover3" type="submit" value="예약하기">
 </form>
 </div>
